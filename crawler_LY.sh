@@ -1,3 +1,4 @@
+#!/bin/bash
 # no input
 
 function get_domain(){

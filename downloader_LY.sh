@@ -1,3 +1,4 @@
+#!/bin/bash
 #bash input: $url, $max_int, $strg_file_dir p.s. max_int use 0 if no ;d
 
 function dl_resource(){	#$url,$int,$line
