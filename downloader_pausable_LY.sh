@@ -1,12 +1,13 @@
 #!/bin/bash
 #bash input: $url, $max_int, $strg_file_dir p.s. max_int use 0 if no ;d
-#$url & $max_int can be null when resume
+#strg file require terminating end!
+#can only provide $strg_file_dir when resume
 
-function dl_resource(){	#$url,$int,$line,$start_i
+function dl_resource(){	#$url_template,$max_int,$line,$start_i
 	for ((i=$4;i<=$2;i++))
 	do
 		url=$(echo "$1" | sed -e "s/;s/$3/g" -e "s/;d/$i/g")
-		#echo "$url"
+		echo "$url"
 		if [ "$3" == "" ]; then
 			filename="$i"
 		else
@@ -24,20 +25,22 @@ function dl_resource(){	#$url,$int,$line,$start_i
 		else
 			echo "[S]"
 		fi
-		sed -i "4 s/.*/$i/" "$temp_file"		
+		sed -i "4 s/.*/$i/" "$temp_file"
+		[ -e "$pause_file" ] && exit			
 	done
 }
 
 temp_file="temp.ly"
+pause_file="../pause.ly"
 
 if [ ! -f "$temp_file" ]; then
 	printf "$1\n$2\n1\n0\n" > "$temp_file"
-	url=$1
+	url_template=$1
 	max_int=$2
 	current_strg_counter=1
 	current_counter=0
 else
-	url=$(sed -n 1p "$temp_file")
+	url_template=$(sed -n 1p "$temp_file")
 	max_int=$(sed -n 2p "$temp_file")
 	current_strg_counter=$(sed -n 3p "$temp_file")
 	current_counter=$(sed -n 4p "$temp_file")
@@ -47,14 +50,14 @@ $(mkdir -p download)
 cd download
 temp_file="../$temp_file"
 if [ "$3" == "" ]; then
-	dl_resource "$url" "$max_int" "$3" "$current_counter"
+	dl_resource "$url_template" "$max_int" "$3" "$current_counter"
 else
-	strg_max_line=$(wc -l < "$temp_file")
+	strg_max_line=$(wc -l < "$3")
 	for ((j=$current_strg_counter;j<=$strg_max_line;j++))
 	do
-		sed -i "3 s/.*/$j/" "$temp_file"	
+		sed -i "3 s/.*/$j/" "$temp_file"
 		line=$(sed -n "$j"p "$3")
-		dl_resource "$1" "$max_int" "$line" "$current_counter"
+		dl_resource "$url_template" "$max_int" "$line" "$current_counter"
 		current_counter=0
 	done
 fi
