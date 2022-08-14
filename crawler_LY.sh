@@ -59,6 +59,7 @@ while ! [ -e pause.ly ] ; do
     fi
   done
   update_newline_n
+  #sleep 1
 done
 
 
