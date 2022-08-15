@@ -5,7 +5,7 @@ while true;do
 	filename=$(basename "$1")"_${date}.tar"
 	printf "\n$filename"
 	tar -cf "$filename" "$1" --force-local
-	./web3storage.sh "$filename" "$(cat $3)"
+	web3storage.sh "$filename" "$(cat $3)"
 	rm "$filename"
 	sleep "$2"
 done
