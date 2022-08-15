@@ -3,6 +3,8 @@
 token="$2"
 file=$1
 name=$(basename "$file")
+#inc dir in file
+#name="$file"
 curl -X POST --url "https://api.web3.storage/upload" \
 -H "Authorization:Bearer $token" \
 -H "X-NAME:$name" \
