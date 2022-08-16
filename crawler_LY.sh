@@ -1,6 +1,6 @@
 #!/bin/bash
 # no input
-
+# sed -i "s/\t#/\t/g" crawler_LY.sh single process
 function get_domain(){
   awk -F[/:?] '{print $4}'
 }
@@ -43,23 +43,27 @@ line_n=$(sed '5!d' temp.ly)
 #echo "$line_n"
 
 while ! [ -e pause.ly ] ; do
-  url=$(sed "$line_n!d" url.ly)
-  [ -z "$url" ] && break
-  ([ "$load_same_domain" == 1 ] && [ $(get_domain <<< "$url") != "$domain" ]) && (update_newline_n;url_list="") || url_list=$("$(dirname $0)/scan_html_LY.sh" "$url" "$addon_list")
-  IFS=$'\n'
-  for new_url in $url_list
-  do
-    if ! grep -Fqx -- "$new_url" url.ly
-      then
-        if [ "$is_same_domain" == 1 ]
-	then
-	   [[ $(get_domain <<< "$new_url") == $domain ]] && echo "$new_url" >> url.ly
-	else echo "$new_url" >> url.ly
-	fi
-    fi
-  done
-  update_newline_n
-  #sleep 0.01
+	#if ! [ -f lock.ly ]; then
+	#touch lock.ly
+	  url=$(sed "$line_n!d" url.ly)
+	  [ -z "$url" ] && break
+	  ([ "$load_same_domain" == 1 ] && [ $(get_domain <<< "$url") != "$domain" ]) && (update_newline_n;url_list="") || url_list=$("$(dirname $0)/scan_html_LY.sh" "$url" "$addon_list")
+	  IFS=$'\n'
+	  for new_url in $url_list
+	  do
+	    if ! grep -Fqx -- "$new_url" url.ly
+	      then
+		if [ "$is_same_domain" == 1 ]
+		then
+		   [[ $(get_domain <<< "$new_url") == $domain ]] && echo "$new_url" >> url.ly
+		else echo "$new_url" >> url.ly
+		fi
+	    fi
+	  done
+	  update_newline_n
+	  #sleep 0.01
+	#rm lock.ly
+	#fi
 done
 
 
