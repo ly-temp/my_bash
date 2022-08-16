@@ -42,6 +42,7 @@ line_n=$(sed '5!d' temp.ly)
 #echo "$load_same_domain"
 #echo "$line_n"
 
+	#rm -f lock.ly
 while ! [ -e pause.ly ] ; do
 	#if ! [ -f lock.ly ]; then
 	#touch lock.ly
@@ -63,6 +64,7 @@ while ! [ -e pause.ly ] ; do
 	  update_newline_n
 	  #sleep 0.01
 	#rm lock.ly
+	#sleep 2
 	#fi
 done
 
