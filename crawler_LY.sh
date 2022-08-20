@@ -44,8 +44,7 @@ line_n=$(sed '5!d' temp.ly)
 
 	#rm -f lock.ly
 while ! [ -e pause.ly ] ; do
-	#if ! [ -f lock.ly ]; then
-	#touch lock.ly
+	#if mkdir /tmp/lock 2>/dev/null; then
 	  url=$(sed "$line_n!d" url.ly)
 	  [ -z "$url" ] && break
 	  ([ "$load_same_domain" == 1 ] && [ $(get_domain <<< "$url") != "$domain" ]) && (update_newline_n;url_list="") || url_list=$("$(dirname $0)/scan_html_LY.sh" "$url" "$addon_list")
@@ -63,9 +62,9 @@ while ! [ -e pause.ly ] ; do
 	  done
 	  update_newline_n
 	  #sleep 0.01
-	#rm lock.ly
+	#rm -r lock
 	#fi
-	#sleep 5	
+	#sleep 5
 done
 
 
