@@ -42,7 +42,7 @@ line_n=$(sed '5!d' temp.ly)
 #echo "$load_same_domain"
 #echo "$line_n"
 
-	#rm -f lock.ly
+	#rm -r -f lock
 while ! [ -e pause.ly ] ; do
 	#if mkdir /tmp/lock 2>/dev/null; then
 	  url=$(sed "$line_n!d" url.ly)
