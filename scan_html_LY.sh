@@ -24,7 +24,7 @@ function html_append_host_LY(){
 UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/37.0.2062.94 Chrome/37.0.2062.94 Safari/E7FBAF"
 host=$(awk -F[/:?] '{print $4}' <<< "$1")
 protocol=$(grep -o ".*://" <<< "$1")
-content=$(curl -s "$1" --connect-timeout 5 -A "$UA" | tr -d '\0')
+content=$(curl -s "$1" --max-filesize 52428800 --connect-timeout 5 -A "$UA" | tr -d '\0')
 echo "$content" | html_get_url_LY | html_append_host_LY "$protocol$host"
 #printf "\n--add_on--\n\n"
 add_on "$content" "$2"
