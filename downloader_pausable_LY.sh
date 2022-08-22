@@ -17,6 +17,7 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i
 				filename="$i-$3"
 			fi
 		fi
+		filename=$(basename "$filename")		
 		echo -n "$filename"
 		$(wget "$url" -q -O "$filename")
 		if [ "$?" != 0 ]; then
