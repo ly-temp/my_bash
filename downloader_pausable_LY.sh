@@ -7,7 +7,7 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i
 	for ((i=$4;i<=$2;i++))
 	do
 		url=$(echo "$1" | sed -e "s|;s|$3|g" -e "s|;d|$i|g")
-		echo "$url"
+		#echo "$url"
 		if [ "$3" == "" ]; then
 			filename="$i"
 		else
