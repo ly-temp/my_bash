@@ -4,8 +4,7 @@
 function dl_resource(){	#$url,$int,$line
 	for ((i=0;i<=$2;i++))
 	do
-		url=$(echo "$1" | sed "s/;s/$3/g")
-		url=$(echo "$url" | sed "s/;d/$i/g")
+		url=$(echo "$1" | sed -e "s|;s|$3|g" -e "s|;d|$i|g")
 		#echo "$url"
 		if [ "$3" == "" ]; then
 			filename="$i"
