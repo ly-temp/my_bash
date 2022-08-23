@@ -53,11 +53,11 @@ temp_file="../$temp_file"
 if [ "$3" == "" ]; then
 	dl_resource "$url_template" "$max_int" "$3" "$current_counter"
 else
-	strg_max_line=$(wc -l < "$3")
+	strg_max_line=$(wc -l < "../$3")
 	for ((j=$current_strg_counter;j<=$strg_max_line;j++))
 	do
 		sed -i "3 s/.*/$j/" "$temp_file"
-		line=$(sed -n "$j"p "$3")
+		line=$(sed -n "$j"p "../$3")
 		dl_resource "$url_template" "$max_int" "$line" "$current_counter"
 		current_counter=0
 	done
