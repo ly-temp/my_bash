@@ -27,7 +27,7 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i
 			echo "[S]"
 		fi
 		sed -i "4 s/.*/$i/" "$temp_file"
-		[ -e "$pause_file" ] && exit			
+		[ -e "$pause_file" ] && break
 	done
 }
 
@@ -60,5 +60,6 @@ else
 		line=$(sed -n "$j"p "../$3")
 		dl_resource "$url_template" "$max_int" "$line" "$current_counter"
 		current_counter=0
+		[ -e "$pause_file" ] && break
 	done
 fi
