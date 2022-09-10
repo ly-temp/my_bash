@@ -8,15 +8,15 @@ else
 	suffix=$3
 fi
 
+awk_bc(){
+	awk '{print $1 + $2}'
+}
+
 diff_db(){
 	current_db=($(ffmpeg -i "$file" -filter:a volumedetect -f null /dev/null 2>&1 | grep "mean_volume:" | grep -o ":.*" | cut -d' ' -f2))
 	#diff=$(echo "$target_db - $current_db" | bc)
 	diff=$(awk_bc <<< "$target_db -$current_db")
 	echo "$diff"
-}
-
-awk_bc(){
-	awk '{print $1 + $2}'
 }
 
 echo "in file: $1"
