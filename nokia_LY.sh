@@ -13,7 +13,7 @@ echo "type: $type"
 diff_db(){
 	current_db=($(ffmpeg -i "$file" -filter:a volumedetect -f null /dev/null 2>&1 | grep "mean_volume:" | grep -o ":.*" | cut -d' ' -f2))
 	#diff=$(echo "$target_db - $current_db" | bc)
-	diff=$(awk_bc "$target_db" "-$current_db")
+	diff=$(awk_bc <<< "$target_db -$current_db")
 	echo "$diff"
 }
 
@@ -33,7 +33,7 @@ while
   fi
 
   #value=$(echo "$value + $diff" | bc)
-  value=$(awk_bc "$value" "$diff")
+  value=$(awk_bc <<< "$value $diff")
   str_value="$value""dB"
   out_f="${1%.*}[$str_value]$suffix"
   echo "parameter: $str_value"
