@@ -26,7 +26,6 @@ file=$1
 diff=$(diff_db)
 value=0
 str_value=""
-file=$out_f
 while
   if [ -f "$out_f" ]; then
 	rm "$out_f"
