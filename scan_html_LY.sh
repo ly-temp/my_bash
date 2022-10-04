@@ -10,6 +10,16 @@ function add_on(){
 	then
 	  sed 's/ //g' <<< "$1" | grep -Eo 'onClick="[^"]+"' | cut -d'"' -f2 | sed "s|^|$protocol$host/|" #for haodu book tag
 	fi
+
+	if grep -Fq "mf;" <<< "$2"
+	then
+	  grep -zEoi '<[^>]+downloadButton[^>]+>' <<< "$1" | grep -aEoi 'href="[^"]+"' | cut -d '"' -f2 | sort | uniq | html_append_host_LY "$this_url"
+	fi
+
+	if grep -Fq "all;" <<< "$2"
+	then
+	  grep -zEoi '<[^>]+>' <<< "$1" | grep -aEoi 'href="[^"]+"' | cut -d '"' -f2 | sort | uniq | html_append_host_LY "$this_url"
+	fi
 }
 function html_get_url_LY(){
 	#grep -Eoi '<a[^>]+>' | grep -Eo '"(http|https|/).*' | cut -d '"' -f2 | sort | uniq
@@ -30,6 +40,7 @@ UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubunt
 #protocol=$(grep -o ".*://" <<< "$1")
 this_url=$(sed "s|/$||g" <<< "$1")
 content=$(curl -s "$1" --max-filesize 52428800 --connect-timeout 5 -A "$UA" | tr -d '\0')
-echo "$content" | html_get_url_LY | html_append_host_LY "$this_url"
+std_url=$(echo "$content" | html_get_url_LY | html_append_host_LY "$this_url")
 #printf "\n--add_on--\n\n"
-add_on "$content" "$2"
+add_url=$(add_on "$content" "$2")
+sort <<< $(echo "$std_url"; echo "$add_url") | uniq
