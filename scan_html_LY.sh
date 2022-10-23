@@ -23,7 +23,8 @@ function add_on(){
 }
 function html_get_url_LY(){
 	#grep -Eoi '<a[^>]+>' | grep -Eo '"(http|https|/).*' | cut -d '"' -f2 | sort | uniq
-	grep -Eoi '<a[^>]+>' | grep -Eoi 'href="[^"]+"' | cut -d '"' -f2 | sort | uniq
+	#grep -Eoi '<a[^>]+>' | grep -Eoi 'href="[^"]+"' | cut -d '"' -f2 | sort | uniq
+	grep -Eoi '<a[^>]+' | grep -Eoi 'href="[^"]+"' | cut -d '"' -f2 | sort | uniq	#when > at newline
 }
 function html_append_host_LY(){
 	html_base=$(sed -E "s|[^/]$|&/|g" <<< "$1" | cut -d'/' -f1-3)
