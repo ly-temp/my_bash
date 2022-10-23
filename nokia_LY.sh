@@ -43,7 +43,7 @@ while
 		$(ffmpeg -i "$1" -r 30 -s 352*288 -acodec aac -filter:a "volume=$str_value" -y "$out_f" >/dev/null 2>&1)
 	
   #fix 3gp cannot select codec
-  #if [ $(grep -E "(Default encoder for format 3gp \(codec amr_nb\) is probably disabled.|Conversion failed!)" <<< "$output" | wc -w) -gt 0 ]; then
+  #if [ $? ]; then
   #	output=$(ffmpeg -i "$1" -r 30 -s 352*288 -filter:a "volume=$str_value" -vcodec libx264 -acodec aac -y "$out_f" 2>&1)
   #fi
 
