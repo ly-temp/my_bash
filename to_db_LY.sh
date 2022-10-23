@@ -44,3 +44,4 @@ while
   [ "$diff" != "0" ]
 do true; done
 echo "$out_f"
+#mv "$out_f" ../output --backup=numbered
