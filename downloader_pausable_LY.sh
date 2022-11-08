@@ -18,13 +18,13 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i
 			fi
 		fi
 		filename=$(basename "$filename")		
-		echo -n "$filename"
+		echo -n "$filename" >log.txt
 		$(wget "$url" -q -O "$filename")
 		if [ "$?" != 0 ]; then
 			rm "$filename"
-			echo "[E]"
+			echo "[E]" >log.txt
 		else
-			echo "[S]"
+			echo "[S]" >log.txt
 		fi
 		sed -i "4 s/.*/$i/" "$temp_file"
 		[ -e "$pause_file" ] && break
