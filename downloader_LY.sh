@@ -35,5 +35,5 @@ else
 	while IFS= read -r line
 	do
 		dl_resource "$1" "$2" "$line"
-	done < "$3"
+	done < "../$3"
 fi
