@@ -1,6 +1,6 @@
 #!/bin/bash
 #bash input: $url, $max_int, $strg_file_dir p.s. max_int use 0 if no ;d
-
+#sed "s/#>/>/g"->log
 function dl_resource(){	#$url,$int,$line
 	for ((i=0;i<=$2;i++))
 	do
@@ -16,13 +16,13 @@ function dl_resource(){	#$url,$int,$line
 			fi
 		fi
 		filename=$(basename "$filename")
-		echo -n "$filename"
+		echo -n "$filename" #>>../log.txt
 		$(wget "$url" -q -O "$filename")
 		if [ "$?" != 0 ]; then
 			rm "$filename"
-			echo "[E]"
+			echo "[E]" #>>../log.txt
 		else
-			echo "[S]"
+			echo "[S]" #>>../log.txt
 		fi
 	done
 }

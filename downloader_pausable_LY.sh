@@ -2,6 +2,7 @@
 #bash input: $url, $max_int, $strg_file_dir p.s. max_int use 0 if no ;d
 #strg file require terminating end!
 #can only provide $strg_file_dir when resume
+#sed "s/#>/>/g"->log
 
 function dl_resource(){	#$url_template,$max_int,$line,$start_i
 	for ((i=$4;i<=$2;i++))
@@ -18,13 +19,13 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i
 			fi
 		fi
 		filename=$(basename "$filename")
-		echo -n "$filename"
+		echo -n "$filename" #>>../log.txt
 		$(wget "$url" -q -O "$filename")
 		if [ "$?" != 0 ]; then
 			rm "$filename"
-			echo "[E]"
+			echo "[E]" #>>../log.txt
 		else
-			echo "[S]"
+			echo "[S]" #>>../log.txt
 		fi
 		sed -i "4 s/.*/$i/" "$temp_file"
 		[ -e "$pause_file" ] && break
@@ -58,7 +59,7 @@ else
 	do
 		sed -i "3 s/.*/$j/" "$temp_file"
 		line=$(sed -n "$j"p "../$3")
-		dl_resource "$url_template" "$max_int" "$line" "$current_counter"
+		dl_resource "$url_template" "$max_int" "$line" "$current_counter" #|tee -a log.txt
 		current_counter=0
 		[ -e "$pause_file" ] && break
 	done
