@@ -58,7 +58,6 @@ else
 	for ((j=$current_strg_counter;j<=$strg_max_line;j++))
 	do
 		sed -i "3 s/.*/$j/" "$temp_file"
-		#sync
 		line=$(sed -n "$j"p "../$3")
 		dl_resource "$url_template" "$max_int" "$line" "$current_counter" #|tee -a log.txt
 		current_counter=0
