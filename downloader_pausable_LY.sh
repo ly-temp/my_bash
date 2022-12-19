@@ -37,16 +37,12 @@ pause_file="../pause.ly"
 
 if [ ! -f "$temp_file" ]; then
 	printf "$1\n$2\n1\n0\n" > "$temp_file"
-	url_template=$1
-	max_int=$2
-	current_strg_counter=1
-	current_counter=0
-else
-	url_template=$(sed -n 1p "$temp_file")
-	max_int=$(sed -n 2p "$temp_file")
-	current_strg_counter=$(sed -n 3p "$temp_file")
-	current_counter=$(sed -n 4p "$temp_file")
 fi
+
+url_template=$(sed -n 1p "$temp_file")
+max_int=$(sed -n 2p "$temp_file")
+current_strg_counter=$(sed -n 3p "$temp_file")
+current_counter=$(sed -n 4p "$temp_file")
 
 $(mkdir -p download)
 cd download
