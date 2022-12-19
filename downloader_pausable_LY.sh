@@ -30,7 +30,7 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i,$current_strg_cou
 			echo "[S]" #>>../log.txt
 		fi
 		sed -i -e "4 s/.*/$5/" -e "5 s/.*/$i/" "$temp_file"
-		[ -e "$pause_file" ] && break
+		[ -e "$pause_file" ] && exit
 	done
 }
 
@@ -60,6 +60,5 @@ else
 		line=$(sed -n "$j"p "../$4")
 		dl_resource "$url_template" "$max_int" "$line" "$current_counter" "$j" #|tee -a log.txt
 		current_counter=$min_int
-		[ -e "$pause_file" ] && break
 	done
 fi
