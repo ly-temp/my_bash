@@ -59,7 +59,7 @@ pause_file="../pause.ly"
 
 while [[ $# -gt 0 ]]; do
 	case $1 in
-		-u|-url|--url)
+		-url|--url)
 		  url_template="$2"
 		  shift # past argument
 		  shift # past value
