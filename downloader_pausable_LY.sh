@@ -29,10 +29,11 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i,$current_strg_cou
 	for ((i=$4;i<=$2;i++))
 	do
 		sed -i -e "5 s/.*/$5/" -e "6 s/.*/$i/" "$temp_file"
+		rm -f "$filename$lock_suffix"	#last residue lock
 		[ -e "$pause_file" ] && exit
 
 		url=$(echo "$1" | sed -e "s|;s|$3|g" -e "s|;d|$i|g")
-		#echo "$url";continue
+		#echo "$url"#;continue
 
 		filename=""
 		if [ "$6" -eq 0 ]; then
@@ -73,8 +74,6 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i,$current_strg_cou
 		else
 			echo "[S]" #>>../log.txt
 		fi
-
-		rm -f "$filename$lock_suffix"
 
 		#sed -i -e "5 s/.*/$5/" -e "6 s/.*/$i/" "$temp_file"
 		#[ -e "$pause_file" ] && exit
