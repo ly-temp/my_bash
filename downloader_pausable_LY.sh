@@ -25,6 +25,19 @@ function valid_filename(){	#$filename
 	printf "$f"
 }
 
+function strip_space(){
+	sed -Ee "s/^[ ]+//g" -Ee "s/[ ]+$//g"
+}
+
+function grep_content_disposition(){	#$response headers
+	dispos=$(grep -i "content-disposition:" <<< "$1")
+	utf_8_dispos=$(grep -iEo "filename\*[^=]?+=[^;]+" <<< "$dispos" | tail -n1 | awk -F\' '{print $NF}' | tr -d '\r','\n' | urldecode )
+	normal_dispos=$(grep -iEo "filename[^=*]?+=[^;]+" <<< "$dispos" | tail -n1 | awk -F\" '{print $(NF-1)}' | tr -d '\r','\n' | urldecode )
+	[ "$utf_8_dispos" != "" ] && choosen_dispos="$utf_8_dispos" || choosen_dispos="$normal_dispos"
+	choosen_dispos=$(strip_space <<< "$choosen_dispos")
+	printf "$choosen_dispos"
+}
+
 function dl_resource(){	#$url_template,$max_int,$line,$start_i,$current_strg_counter,$is_numbering,$cookie_file
 	for ((i=$4;i<=$2;i++))
 	do
@@ -38,18 +51,20 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i,$current_strg_cou
 		filename=""
 		if [ "$6" -eq 0 ]; then
 			if [ "$7" != "" ]; then
-				filename=$(curl -sLI "$url" -H @"$7" | grep "content-disposition:" | tr -d '\r','\n' | awk -F\' '{print $NF}'| urldecode )
+				response_header=$(curl -sLI "$url" -H @"$7")
 			else
-				filename=$(curl -sLI "$url" | grep "content-disposition:" | tr -d '\r','\n' | awk -F\' '{print $NF}'| urldecode )
+				response_header=$(curl -sLI "$url")
 			fi
-			[ "$filename" == "" ] && filename=$(basename -- "$url" | urldecode )
+			#filename=$(grep -i "content-disposition:" <<< "$response_header" | tail | tr -d '\r','\n' | awk -F\' '{print $NF}'| urldecode)
+			filename=$(grep_content_disposition "$response_header")
+			[ "$filename" == "" ] && filename=$(grep -i "location:" <<< "$response_header" | tail -n1 | tr -d '\r','\n' | cut -d':' -f2- | strip_space | urldecode)
 			filename=$(valid_filename "$filename")
 		fi
 		if [ "$filename" == "" ]; then
 			if [ "$3" == "" ]; then
 				filename="$i"
 			else
-				purged_line=$(basename -- "$3" | urldecode )
+				purged_line=$(basename -- "$3" | urldecode)
 				if [ "$2" == 0 ]; then
 					filename="$purged_line"
 				else
