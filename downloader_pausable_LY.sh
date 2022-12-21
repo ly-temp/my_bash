@@ -7,7 +7,7 @@
 temp_file="temp.ly"
 pause_file="../pause.ly"
 lock_suffix=".lock.ly"
-
+download_dir="download"
 function urldecode(){
 	sed 's@+@ @g;s@%@\\x@g'| xargs -0 printf "%b"
 }
@@ -31,7 +31,7 @@ function strip_space(){
 
 function grep_content_disposition(){	#$response headers
 	dispos=$(grep -i "content-disposition:" <<< "$1")
-	utf_8_dispos=$(grep -iEo "filename\*[^=]?+=[^;]+" <<< "$dispos" | tail -n1 | awk -F\' '{print $NF}' | tr -d '\r','\n' | urldecode )
+	utf_8_dispos=$(grep -iEo "filename[^=]?+\*[^=]?+=[^;]+" <<< "$dispos" | tail -n1 | awk -F\' '{print $NF}' | tr -d '\r','\n' | urldecode )
 	normal_dispos=$(grep -iEo "filename[^=*]?+=[^;]+" <<< "$dispos" | tail -n1 | awk -F\" '{print $(NF-1)}' | tr -d '\r','\n' | urldecode )
 	[ "$utf_8_dispos" != "" ] && choosen_dispos="$utf_8_dispos" || choosen_dispos="$normal_dispos"
 	choosen_dispos=$(strip_space <<< "$choosen_dispos")
@@ -159,8 +159,8 @@ is_numbering=$(sed -n 4p "$temp_file")
 current_strg_counter=$(sed -n 5p "$temp_file")
 current_counter=$(sed -n 6p "$temp_file")
 
-$(mkdir -p download)
-cd download
+$(mkdir -p "$download_dir")
+cd "$download_dir"
 temp_file="../$temp_file"
 if [ "$strg_file" == "" ]; then
 	dl_resource "$url_template" "$max_int" "" "$current_counter" "$current_strg_counter" "$is_numbering" "$cookie_file"
