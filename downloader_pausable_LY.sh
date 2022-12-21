@@ -42,21 +42,24 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i,$current_strg_cou
 			else
 				filename=$(curl -sLI "$url" | grep "content-disposition:" | tr -d '\r','\n' | awk -F\' '{print $NF}'| urldecode )
 			fi
+			[ "$filename" == "" ] && filename=$(basename -- "$url" | urldecode )
+			filename=$(valid_filename "$filename")
 		fi
 		if [ "$filename" == "" ]; then
 			if [ "$3" == "" ]; then
 				filename="$i"
 			else
-				purged_line=$(basename -- "$3")
+				purged_line=$(basename -- "$3" | urldecode )
 				if [ "$2" == 0 ]; then
 					filename="$purged_line"
 				else
 					filename="$i-$purged_line"
 				fi
 			fi
-		else
-			filename=$(valid_filename "$filename")
-		fi
+		fi		
+
+
+
 
 		echo -n "$filename" #>>../log.txt
 
