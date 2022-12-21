@@ -4,42 +4,66 @@
 #can only provide $strg_file_dir when resume
 #sed "s/#>/>/g"->log
 
+temp_file="temp.ly"
+pause_file="../pause.ly"
+lock_suffix=".lock.ly"
+
 function urldecode(){
 	sed 's@+@ @g;s@%@\\x@g'| xargs -0 printf "%b"
+}
+
+function valid_filename(){	#$filename
+	f=$(basename -- "$1") 	#purge filename
+	extension=".${f##*.}"
+	name="${f%.*}"
+	count=1
+	while [ -f "$f" ] && [ ! -f "$f$lock_suffix" ]; do	#break if locked
+		f="$name"."$count$extension"
+		count=$((count+1))
+	done
+	touch "$f$lock_suffix"	#make lock file
+	printf "$f"
 }
 
 function dl_resource(){	#$url_template,$max_int,$line,$start_i,$current_strg_counter,$is_numbering,$cookie_file
 	for ((i=$4;i<=$2;i++))
 	do
+		sed -i -e "5 s/.*/$5/" -e "6 s/.*/$i/" "$temp_file"
+		[ -e "$pause_file" ] && exit
+
 		url=$(echo "$1" | sed -e "s|;s|$3|g" -e "s|;d|$i|g")
 		#echo "$url";continue
-		if [ "$3" == "" ]; then
-			filename="$i"
-		else
-			purged_line=$(basename "$3")
-			if [ "$2" == 0 ]; then
-				filename="$purged_line"
-			else
-				filename="$i-$purged_line"
-			fi
-		fi
 
-		#filename=$(basename "$filename")
+		filename=""
 		if [ "$6" -eq 0 ]; then
 			if [ "$7" != "" ]; then
-				new_filename=$(curl -sLI "$url" -H @"$7" | grep "content-disposition:" | tr -d '\r','\n' | awk -F\' '{print $NF}'| urldecode )
+				filename=$(curl -sLI "$url" -H @"$7" | grep "content-disposition:" | tr -d '\r','\n' | awk -F\' '{print $NF}'| urldecode )
 			else
-				new_filename=$(curl -sLI "$url" | grep "content-disposition:" | tr -d '\r','\n' | awk -F\' '{print $NF}'| urldecode )
+				filename=$(curl -sLI "$url" | grep "content-disposition:" | tr -d '\r','\n' | awk -F\' '{print $NF}'| urldecode )
 			fi
-			#echo "$new_filename"
-			[ "$new_filename" != "" ] && filename="$new_filename"
+		fi
+		if [ "$filename" == "" ]; then
+			if [ "$3" == "" ]; then
+				filename="$i"
+			else
+				purged_line=$(basename -- "$3")
+				if [ "$2" == 0 ]; then
+					filename="$purged_line"
+				else
+					filename="$i-$purged_line"
+				fi
+			fi
+		else
+			filename=$(valid_filename "$filename")
 		fi
 
 		echo -n "$filename" #>>../log.txt
 
 		if [ "$7" != "" ]; then
+			#$(curl -sL "$url" -H @"$7" -C- -o "$filename")	#resume mode
 			$(curl -sL "$url" -H @"$7" -o "$filename")
 		else
+			#$(wget "$url" -q -c -O "$filename") #resume mode
 			$(wget "$url" -q -O "$filename")
 		fi
 
@@ -49,13 +73,14 @@ function dl_resource(){	#$url_template,$max_int,$line,$start_i,$current_strg_cou
 		else
 			echo "[S]" #>>../log.txt
 		fi
-		sed -i -e "5 s/.*/$5/" -e "6 s/.*/$i/" "$temp_file"
-		[ -e "$pause_file" ] && exit
+
+		rm -f "$filename$lock_suffix"
+
+		#sed -i -e "5 s/.*/$5/" -e "6 s/.*/$i/" "$temp_file"
+		#[ -e "$pause_file" ] && exit
 	done
 }
 
-temp_file="temp.ly"
-pause_file="../pause.ly"
 
 while [[ $# -gt 0 ]]; do
 	case $1 in
