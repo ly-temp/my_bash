@@ -85,7 +85,7 @@ function valid_filename(){	#$filename
 		f="$name"."$count$extension"
 		count=$((count+1))
 	done
-	
+
 	sed -i "3 s/.*/$f/" "$temp_file" #make lock file l:$lock_name
 	printf "$f"
 }
@@ -161,15 +161,16 @@ function dl_resource(){ #$line
 
 		if [ "$cookie_file" != "" ]; then
 			#$(curl -sL "$url" -H @"$cookie_file" -C- -o "$filename")	#resume mode
-			$(curl -sL "$url" -H @"$cookie_file" -o "$filename")
+			status_code=$(curl -sL "$url" -f -w "%{http_code}" -H @"$cookie_file" -o "$filename")	#-w "%{http_code}"
 		else
 			#$(wget "$url" -q -c -O "$filename") #resume mode
-			$(wget "$url" -q -O "$filename")
+			#$(wget "$url" -q -O "$filename")
+			status_code=$(curl -sL "$url" -f -w "%{http_code}" -o "$filename")
 		fi
 
-		if [ "$?" != 0 ]; then
+		if [ "$?" -ne 0 ]; then
 			rm -f "$filename"
-			printf "[E]" #>>../log.txt
+			printf "[E] $status_code" #>>../log.txt
 		else
 			printf "[S]" #>>../log.txt
 		fi
