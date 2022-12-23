@@ -149,7 +149,7 @@ function dl_resource(){ #$line
 				filename="$i"
 			else
 				purged_line=$(basename -- "$1" | urldecode)
-				if [ "$max_int" == 0 ]; then
+				if [ "$max_int" == 0 ] && [ "$min_int" == 0 ]; then
 					filename="$purged_line"
 				else
 					filename="$i-$purged_line"
