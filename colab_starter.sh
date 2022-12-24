@@ -19,6 +19,6 @@ wget https://github.com/ly-temp/my_py/archive/refs/heads/main.zip -O main.zip
 unzip -o main.zip
 rm main.zip
 mv my_py-main/* /bin
-rm -r my_bash-main
+rm -r my_py-main
 
 chmod +x /bin/*
