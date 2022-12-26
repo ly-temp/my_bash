@@ -6,6 +6,7 @@ function extract_purge_txt(){
 
 [ -z "$1" ] || [ "${1##*.}" != "epub" ] && exit
 file_realpath=$(realpath "$1")
+file_realdir=$(dirname "$file_realpath")
 file=$(basename "$1")
 folder="${file}.unzip"
 if mkdir "$folder";then
@@ -16,8 +17,9 @@ if mkdir "$folder";then
 	title=$(grep -m1 "title" "$opf" | extract_purge_txt)
 	aut=$(grep -m1 "creator" "$opf" | extract_purge_txt)
 	new_name="${title} - ${aut}.epub"
+	#new_name=$(cut -d '\r','\n' <<< "$new_name")
 	#mv --backup=numbered "$(realpath $1)" "$new_name"
-	mv --backup=numbered "$file_realpath" "$(dirname $file_realpath)/$new_name"
+	mv --backup=numbered "$file_realpath" "${file_realdir}/${new_name}"
 	cd ../
 	rm -r "$folder"
 fi
