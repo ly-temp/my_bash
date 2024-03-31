@@ -14,15 +14,15 @@ transfer_sh(){
 }
 null_pointer(){
 	u=$(curl -gs -F"file=@$file" -Fsecret= https://0x0.st |tr -d '\n')
-	printf %s "$u/$(basename "$file")"
+	printf %s "$u/$(basename -- "$file")"
 }
 oshi_at(){
 	u=$(curl -gs -T "$file" https://oshi.at/?expire=129600 |grep '\[Download\]' |cut -d\  -f1)
-	printf %s "$u/$(basename "$file")"
+	printf %s "$u/$(basename -- "$file")"
 }
 file_coffee(){
 	u=$(curl -gs -F"file=@$file" https://api.file.coffee/file/upload|jq -r .url)
-	printf %s "$u?f=$(basename "$file")"
+	printf %s "$u?f=$(basename -- "$file")"
 }
 s3(){
 	s3_LY.sh -f "$file" -s "${service:1}" -x p
